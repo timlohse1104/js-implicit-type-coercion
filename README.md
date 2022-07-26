@@ -1,2 +1,2 @@
-# js-type-cohersion
+# js-implicit-type-coercion
 Test JS type cohersion
