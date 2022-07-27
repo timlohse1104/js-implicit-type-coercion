@@ -19,35 +19,35 @@ const genNumber = (number) => {
 };
 
 const genString = (string) => {
-  return Array.from(string, (char) => alphabet[char]).join("+");
+  return Array.from(string, (char) => alphabet[char]).join(" + ");
 };
 
 // SETUP: create alphabet
 alphabet["a"] = `(!{} + [])[${genNumber(1)}]`;
 alphabet["b"] = `({} + [])[${genNumber(2)}]`;
 alphabet["c"] = `({} + [])[${genNumber(5)}]`;
-alphabet["d"] = "d";
 alphabet["e"] = `(!{} + [])[${genNumber(4)}]`;
 alphabet["f"] = `(!{} + [])[${genNumber(0)}]`;
-alphabet["g"] = `([]+([]+[])[${genString("constructor")}])[${genNumber(14)}]`;
-alphabet["h"] = "h";
 alphabet["i"] = `(+!![] / +[] + [])[${genNumber(3)}]`;
 alphabet["j"] = `({} + [])[${genNumber(3)}]`;
-alphabet["k"] = "k";
 alphabet["l"] = `(!{} + [])[${genNumber(2)}]`;
-alphabet["m"] = "m";
 alphabet["n"] = `(+!![] / +[] + [])[${genNumber(1)}]`;
 alphabet["o"] = `({} + [])[${genNumber(1)}]`;
-alphabet["p"] = "p";
-alphabet["q"] = "q";
 alphabet["r"] = `(!!{} + [])[${genNumber(1)}]`;
 alphabet["s"] = `(!{} + [])[${genNumber(3)}]`;
 alphabet["t"] = `(!!{} + [])[${genNumber(0)}]`;
 alphabet["u"] = `(!!{} + [])[${genNumber(2)}]`;
-alphabet["v"] = "v";
+alphabet["y"] = `(+!![] / +[] + [])[${genNumber(7)}]`;
+alphabet["g"] = `([] + ([] + [])[${genString("constructor")}])[${genNumber(14)}]`;
+alphabet["d"] = `([] + ([] + [])[${genString("constructor")}])[${genNumber(30)}]`;
+alphabet["h"] = "h";
+alphabet["k"] = "k";
+alphabet["m"] = "m";
+alphabet["p"] = "p";
+alphabet["q"] = "q";
+alphabet["v"] = `([] + ([] + [])[${genString("constructor")}])[${genNumber(25)}]`;
 alphabet["w"] = "w";
 alphabet["x"] = "x";
-alphabet["y"] = `(+!![] / +[] + [])[${genNumber(7)}]`;
 alphabet["z"] = "z";
 alphabet["A"] = `([]+[][${genString("constructor")}])[${genNumber(9)}]`;
 alphabet["B"] = "B";
@@ -67,7 +67,7 @@ alphabet["O"] = `({} + [])[${genNumber(8)}]`;
 alphabet["P"] = "P";
 alphabet["Q"] = "Q";
 alphabet["R"] = "R";
-alphabet["S"] = `([]+([]+[])[${genString("constructor")}])[${genNumber(9)}]`;
+alphabet["S"] = `([] + ([] + [])[${genString("constructor")}])[${genNumber(9)}]`;
 alphabet["T"] = "T";
 alphabet["U"] = "U";
 alphabet["V"] = "V";
@@ -79,8 +79,8 @@ alphabet["Z"] = "X";
 // SETUP: create chars
 chars[" "] = `({} + [])[${genNumber(7)}]`;
 
+// DEBUG
 // DEBUG: different type coercions
-const a = genString("constructor");
 console.log(`
 test 1: ${"2" + -[]}
 test 2: ${!{}}
@@ -128,28 +128,29 @@ test 43: ${(+!![] / +[] + [])[4]}
 test 44: ${(+!![] / +[] + [])[5]}
 test 45: ${(+!![] / +[] + [])[6]}
 test 46: ${(+!![] / +[] + [])[7]}
-test 47: ${{}["toString"]}
-test 48: ${a}
-test 49: ${{}["constructor"]}
-test 50: ${[]["constructor"]}
-test 51: ${(+![])["constructor"]}
-test 52: ${([] + [])["constructor"]}
-test 53: ${true["constructor"]}
-test 54: ${genString("foo")}
-test 55: ${alphabet["A"]}
+test 47: ${{}["constructor"]}
+test 48: ${[]["constructor"]}
+test 49: ${(+![])["constructor"]}
+test 50: ${([] + [])["constructor"]}
+test 51: ${(!![])["constructor"]}
+test 52: ${{}["toString"]}
+test 53: ${[]["toString"]}
+test 54: ${(+![])["toString"]}
+test 55: ${([] + [])["toString"]}
+test 56: ${(!![])["toString"]}
+test 57: ([] + ([] + [])[${genString("constructor")}])[${genNumber(9)}]
+test 58: ([] + ([] + [])[${genString("constructor")}])[${genNumber(14)}]
+test 59: ([] + ([] + [])[${genString("constructor")}])[${genNumber(25)}]
+test 60: ${genString("Array")}.${genString("from")}({${genString("a")}:${genString("b")}})[${genString("constructor")}]
+test 61: ${Object.getOwnPropertyNames(Object)}
 `);
-console.log(alphabet);
-console.log(numbers);
-console.log(chars);
+
+// console.log(alphabet);
+// console.log(numbers);
+// console.log(chars);
 
 // OUTPUT: generate encrypted code
-// const output = `console.log(${chars["["]} + ${alphabet["r"]} + ${
-//   alphabet["e"]
-// } + ${alphabet["s"]} + ${alphabet["t"]} + ${chars[" "]} + (${genNumber(
-//   15
-// )}) + ${chars["]"]})`;
-
-const output = `console.log(${alphabet["A"]})`;
+const output = `console.log(${genString("console")})`;
 fs.writeFileSync("dist/output.js", output);
 const outputResponse = childProcess.execSync("node dist/output.js").toString();
 
@@ -161,4 +162,4 @@ console.log(`
 | Executed - 'node output.js:
 |----------------------------
 | ${outputResponse}
-`);
+// `);
