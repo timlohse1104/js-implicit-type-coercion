@@ -1,6 +1,6 @@
-import * as fs from "fs";
-import * as childProcess from "child_process";
-import { stringify } from "querystring";
+import * as fs from 'fs';
+import * as childProcess from 'child_process';
+import { stringify } from 'querystring';
 
 // Allowed characters: ({[/>+!-=\]})
 // JS base types: Strings, Numbers, Booleans, Arrays, Objects
@@ -10,77 +10,78 @@ const numbers = {};
 const alphabet = {};
 const chars = {};
 
-numbers["0"] = "+[]";
-numbers["1"] = "+!![]";
+numbers['0'] = '+[]';
+numbers['1'] = '+!![]';
 
 const genNumber = (number) => {
-  if (number === 0) return numbers["0"];
-  return Array.from({ length: number }, () => numbers["1"]).join(" + ");
+  if (number === 0) return numbers['0'];
+  return Array.from({ length: number }, () => numbers['1']).join(' + ');
 };
 
 const genString = (string) => {
-  return Array.from(string, (char) => alphabet[char]).join(" + ");
+  return Array.from(string, (char) => alphabet[char]).join(' + ');
 };
 
 // SETUP: create alphabet
-alphabet["a"] = `(!{} + [])[${genNumber(1)}]`;
-alphabet["b"] = `({} + [])[${genNumber(2)}]`;
-alphabet["c"] = `({} + [])[${genNumber(5)}]`;
-alphabet["e"] = `(!{} + [])[${genNumber(4)}]`;
-alphabet["f"] = `(!{} + [])[${genNumber(0)}]`;
-alphabet["i"] = `(+!![] / +[] + [])[${genNumber(3)}]`;
-alphabet["j"] = `({} + [])[${genNumber(3)}]`;
-alphabet["l"] = `(!{} + [])[${genNumber(2)}]`;
-alphabet["n"] = `(+!![] / +[] + [])[${genNumber(1)}]`;
-alphabet["o"] = `({} + [])[${genNumber(1)}]`;
-alphabet["r"] = `(!!{} + [])[${genNumber(1)}]`;
-alphabet["s"] = `(!{} + [])[${genNumber(3)}]`;
-alphabet["t"] = `(!!{} + [])[${genNumber(0)}]`;
-alphabet["u"] = `(!!{} + [])[${genNumber(2)}]`;
-alphabet["y"] = `(+!![] / +[] + [])[${genNumber(7)}]`;
-alphabet["g"] = `([] + ([] + [])[${genString("constructor")}])[${genNumber(14)}]`;
-alphabet["d"] = `([] + ([] + [])[${genString("constructor")}])[${genNumber(30)}]`;
-alphabet["h"] = "h";
-alphabet["k"] = "k";
-alphabet["m"] = "m";
-alphabet["p"] = "p";
-alphabet["q"] = "q";
-alphabet["v"] = `([] + ([] + [])[${genString("constructor")}])[${genNumber(25)}]`;
-alphabet["w"] = "w";
-alphabet["x"] = "x";
-alphabet["z"] = "z";
-alphabet["A"] = `([]+[][${genString("constructor")}])[${genNumber(9)}]`;
-alphabet["B"] = "B";
-alphabet["C"] = "C";
-alphabet["D"] = "D";
-alphabet["E"] = "E";
-alphabet["F"] = "F";
-alphabet["G"] = "G";
-alphabet["H"] = "H";
-alphabet["I"] = `(+!![] / +[] + [])[${genNumber(0)}]`;
-alphabet["J"] = "J";
-alphabet["K"] = "K";
-alphabet["L"] = "L";
-alphabet["M"] = "M";
-alphabet["N"] = `(+{} + [])[${genNumber(0)}]`;
-alphabet["O"] = `({} + [])[${genNumber(8)}]`;
-alphabet["P"] = "P";
-alphabet["Q"] = "Q";
-alphabet["R"] = "R";
-alphabet["S"] = `([] + ([] + [])[${genString("constructor")}])[${genNumber(9)}]`;
-alphabet["T"] = "T";
-alphabet["U"] = "U";
-alphabet["V"] = "V";
-alphabet["W"] = "W";
-alphabet["X"] = "X";
-alphabet["Y"] = "Y";
-alphabet["Z"] = "X";
+alphabet['a'] = `(!{} + [])[${genNumber(1)}]`;
+alphabet['b'] = `({} + [])[${genNumber(2)}]`;
+alphabet['c'] = `({} + [])[${genNumber(5)}]`;
+alphabet['e'] = `(!{} + [])[${genNumber(4)}]`;
+alphabet['f'] = `(!{} + [])[${genNumber(0)}]`;
+alphabet['i'] = `(+!![] / +[] + [])[${genNumber(3)}]`;
+alphabet['j'] = `({} + [])[${genNumber(3)}]`;
+alphabet['l'] = `(!{} + [])[${genNumber(2)}]`;
+alphabet['n'] = `(+!![] / +[] + [])[${genNumber(1)}]`;
+alphabet['o'] = `({} + [])[${genNumber(1)}]`;
+alphabet['r'] = `(!!{} + [])[${genNumber(1)}]`;
+alphabet['s'] = `(!{} + [])[${genNumber(3)}]`;
+alphabet['t'] = `(!!{} + [])[${genNumber(0)}]`;
+alphabet['u'] = `(!!{} + [])[${genNumber(2)}]`;
+alphabet['y'] = `(+!![] / +[] + [])[${genNumber(7)}]`;
+alphabet['g'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(14)}]`;
+alphabet['d'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(30)}]`;
+alphabet['p'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(14)}]`;
+alphabet['v'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(25)}]`;
+alphabet['x'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(13)}]`;
+alphabet['h'] = 'h';
+alphabet['k'] = 'k';
+alphabet['m'] = 'm';
+alphabet['q'] = 'q';
+alphabet['w'] = 'w';
+alphabet['z'] = 'z';
+alphabet['A'] = `([]+[][${genString('constructor')}])[${genNumber(9)}]`;
+alphabet['B'] = 'B';
+alphabet['C'] = 'C';
+alphabet['D'] = 'D';
+alphabet['E'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(12)}]`;
+alphabet['F'] = 'F';
+alphabet['G'] = 'G';
+alphabet['H'] = 'H';
+alphabet['I'] = `(+!![] / +[] + [])[${genNumber(0)}]`;
+alphabet['J'] = 'J';
+alphabet['K'] = 'K';
+alphabet['L'] = 'L';
+alphabet['M'] = 'M';
+alphabet['N'] = `(+{} + [])[${genNumber(0)}]`;
+alphabet['O'] = `({} + [])[${genNumber(8)}]`;
+alphabet['P'] = 'P';
+alphabet['Q'] = 'Q';
+alphabet['R'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(9)}]`;
+alphabet['S'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(9)}]`;
+alphabet['T'] = 'T';
+alphabet['U'] = 'U';
+alphabet['V'] = 'V';
+alphabet['W'] = 'W';
+alphabet['X'] = 'X';
+alphabet['Y'] = 'Y';
+alphabet['Z'] = 'X';
 
 // SETUP: create chars
-chars[" "] = `({} + [])[${genNumber(7)}]`;
+chars[' '] = `({} + [])[${genNumber(7)}]`;
 
 // DEBUG
 // DEBUG: different type coercions
+// prettier-ignore
 console.log(`
 test 1: ${"2" + -[]}
 test 2: ${!{}}
@@ -134,15 +135,12 @@ test 49: ${(+![])["constructor"]}
 test 50: ${([] + [])["constructor"]}
 test 51: ${(!![])["constructor"]}
 test 52: ${{}["toString"]}
-test 53: ${[]["toString"]}
-test 54: ${(+![])["toString"]}
-test 55: ${([] + [])["toString"]}
-test 56: ${(!![])["toString"]}
-test 57: ([] + ([] + [])[${genString("constructor")}])[${genNumber(9)}]
-test 58: ([] + ([] + [])[${genString("constructor")}])[${genNumber(14)}]
-test 59: ([] + ([] + [])[${genString("constructor")}])[${genNumber(25)}]
-test 60: ${genString("Array")}.${genString("from")}({${genString("a")}:${genString("b")}})[${genString("constructor")}]
-test 61: ${Object.getOwnPropertyNames(Object)}
+test 53: ([] + ([] + [])[${genString("constructor")}])[${genNumber(9)}]
+test 54: ([] + ([] + [])[${genString("constructor")}])[${genNumber(14)}]
+test 55: ([] + ([] + [])[${genString("constructor")}])[${genNumber(25)}]
+test 56: ${genString("Array")}.${genString("from")}({${genString("a")}:${genString("b")}})[${genString("constructor")}]
+test 57: ${Object.getOwnPropertyNames(Object)}
+test 58: ([]+(/-/)[${genString('constructor')}])
 `);
 
 // console.log(alphabet);
@@ -150,9 +148,9 @@ test 61: ${Object.getOwnPropertyNames(Object)}
 // console.log(chars);
 
 // OUTPUT: generate encrypted code
-const output = `console.log(${genString("console")})`;
-fs.writeFileSync("dist/output.js", output);
-const outputResponse = childProcess.execSync("node dist/output.js").toString();
+const output = `console.log(${genString('console')})`;
+fs.writeFileSync('dist/output.js', output);
+const outputResponse = childProcess.execSync('node dist/output.js').toString();
 
 console.log(`
 | Content - 'output.js'     :
