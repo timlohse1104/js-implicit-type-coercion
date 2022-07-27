@@ -1,0 +1,20 @@
+{
+  "name": "js-implicit-type-coercion",
+  "version": "1.0.0",
+  "description": "Test JS type cohersion",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timlohse1104/js-implicit-type-coercion.git"
+  },
+  "author": "Tim Lohse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/timlohse1104/js-implicit-type-coercion/issues"
+  },
+  "homepage": "https://github.com/timlohse1104/js-implicit-type-coercion#readme"
+}

@@ -1,3 +1,6 @@
+import * as fs from 'fs'
+import * as childProcess from 'child_process'
+
 // Erlaubte Zeichen: ({[/>+!-=\]})
 // JS Basistypen: Strings, Numbers, Booleans, Arrays, Objects
 // Basistypen mit einander verschmelzen -> Type Coercion
@@ -11,7 +14,7 @@ zahlen['1'] = '+!![]'
 
 const erzeugeZahl = zahl => {
     if(zahl === 0) return zahlen['0']
-    return Array.from({length: zahl}, () => zahlen['1']).join('+') 
+    return Array.from({length: zahl}, () => zahlen['1']).join(' + ') 
 }
 
 const test1 = !{}
@@ -38,7 +41,17 @@ console.log(buchstaben)
 console.log(zahlen)
 console.log(zahlen[0])
 console.log(zeichen)
-console.log(erzeugeZahl(0))
-console.log(erzeugeZahl(1))
-console.log(erzeugeZahl(2))
 console.log(erzeugeZahl(3))
+
+const output = `console.log(${erzeugeZahl(15)})`
+fs.writeFileSync('output.js', output)
+const outputResponse = childProcess.execSync('node output.js').toString()
+console.log(`
+Content - 'output.js'     :
+---------------------------
+${output}
+
+Executed - 'node output.js:
+---------------------------
+${outputResponse}
+`)
