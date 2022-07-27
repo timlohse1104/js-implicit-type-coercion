@@ -13,39 +13,34 @@ numbers["0"] = "+[]";
 numbers["1"] = "+!![]";
 
 const generateNumber = (number) => {
-  if (number === 0) return numbers["0"];
-  return Array.from({ length: number }, () => numbers["1"]).join(" + ");
+    if (number === 0) return numbers["0"];
+    return Array.from({ length: number }, () => numbers["1"]).join(" + ");
 };
 
-const test1 = !{};
-const test2 = !!{};
-const test3 = +[];
-const test4 = -[];
-const test5 = +{};
-const test6 = -{};
-const test7 = {} + [];
-const test8 = +!!{};
+// DEBUG: different type coercions
+console.log(`
+test 1: ${"2" + -[]}
+test 2: ${!{}}
+test 3: ${!!{}}
+test 4: ${+[]}
+test 5: ${-[]}
+test 6: ${+{}}
+test 7: ${-{}}
+test 8: ${{} + []}
+test 9: ${+!!{}}
+test 10: ${+!![] / +[]}
+test 11: ${+"a"}
+test 12: ${("b" + "a" + +"a" + "a").toLowerCase()}
+test 13: ${(+"a" + "o").toLowerCase()}
+alphabet: ${alphabet}
+numbers: ${numbers}
+chars: ${chars}
+`);
 
-console.log(test1);
-console.log(test2);
-console.log(test3);
-console.log(test4);
-console.log(test5);
-console.log(test6);
-console.log(test7);
-console.log(test8);
-
-console.log("2" + -[]);
-
-console.log(alphabet);
-console.log(numbers);
-console.log(numbers[0]);
-console.log(chars);
-console.log(generateNumber(3));
-
+// OUTPUT: generate encrypted code
 const output = `console.log(${generateNumber(15)})`;
-fs.writeFileSync("output.js", output);
-const outputResponse = childProcess.execSync("node output.js").toString();
+fs.writeFileSync("dist/output.js", output);
+const outputResponse = childProcess.execSync("node dist/output.js").toString();
 
 console.log(`
 | Content - 'output.js'     :
