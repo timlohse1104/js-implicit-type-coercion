@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as childProcess from "child_process";
+import { stringify } from "querystring";
 
 // Allowed characters: ({[/>+!-=\]})
 // JS base types: Strings, Numbers, Booleans, Arrays, Objects
@@ -18,7 +19,7 @@ const genNumber = (number) => {
 };
 
 const genString = (string) => {
-  return Array.from(string, (char) => alphabet[char]).join(" + ");
+  return Array.from(string, (char) => alphabet[char]).join("+");
 };
 
 // SETUP: create alphabet
@@ -28,7 +29,7 @@ alphabet["c"] = `({} + [])[${genNumber(5)}]`;
 alphabet["d"] = "d";
 alphabet["e"] = `(!{} + [])[${genNumber(4)}]`;
 alphabet["f"] = `(!{} + [])[${genNumber(0)}]`;
-alphabet["g"] = "g";
+alphabet["g"] = `([]+([]+[])[${genString("constructor")}])[${genNumber(14)}]`;
 alphabet["h"] = "h";
 alphabet["i"] = `(+!![] / +[] + [])[${genNumber(3)}]`;
 alphabet["j"] = `({} + [])[${genNumber(3)}]`;
@@ -48,7 +49,7 @@ alphabet["w"] = "w";
 alphabet["x"] = "x";
 alphabet["y"] = `(+!![] / +[] + [])[${genNumber(7)}]`;
 alphabet["z"] = "z";
-alphabet["A"] = "A";
+alphabet["A"] = `([]+[][${genString("constructor")}])[${genNumber(9)}]`;
 alphabet["B"] = "B";
 alphabet["C"] = "C";
 alphabet["D"] = "D";
@@ -66,7 +67,7 @@ alphabet["O"] = `({} + [])[${genNumber(8)}]`;
 alphabet["P"] = "P";
 alphabet["Q"] = "Q";
 alphabet["R"] = "R";
-alphabet["S"] = "S";
+alphabet["S"] = `([]+([]+[])[${genString("constructor")}])[${genNumber(9)}]`;
 alphabet["T"] = "T";
 alphabet["U"] = "U";
 alphabet["V"] = "V";
@@ -76,11 +77,10 @@ alphabet["Y"] = "Y";
 alphabet["Z"] = "X";
 
 // SETUP: create chars
-chars["["] = `({} + [])[${genNumber(0)}]`;
-chars["]"] = `({} + [])[${genNumber(14)}]`;
 chars[" "] = `({} + [])[${genNumber(7)}]`;
 
 // DEBUG: different type coercions
+const a = genString("constructor");
 console.log(`
 test 1: ${"2" + -[]}
 test 2: ${!{}}
@@ -129,12 +129,14 @@ test 44: ${(+!![] / +[] + [])[5]}
 test 45: ${(+!![] / +[] + [])[6]}
 test 46: ${(+!![] / +[] + [])[7]}
 test 47: ${{}["toString"]}
-test 48: ${{}["constructor"]}
-test 49: ${[]["constructor"]}
-test 50: ${(+![])["constructor"]}
-test 51: ${([] + [])["constructor"]}
-test 52: ${true["constructor"]}
-test 53: ${genString("foo")}
+test 48: ${a}
+test 49: ${{}["constructor"]}
+test 50: ${[]["constructor"]}
+test 51: ${(+![])["constructor"]}
+test 52: ${([] + [])["constructor"]}
+test 53: ${true["constructor"]}
+test 54: ${genString("foo")}
+test 55: ${alphabet["A"]}
 `);
 console.log(alphabet);
 console.log(numbers);
@@ -147,7 +149,7 @@ console.log(chars);
 //   15
 // )}) + ${chars["]"]})`;
 
-const output = `console.log(${genString("constructor")})`;
+const output = `console.log(${alphabet["A"]})`;
 fs.writeFileSync("dist/output.js", output);
 const outputResponse = childProcess.execSync("node dist/output.js").toString();
 
