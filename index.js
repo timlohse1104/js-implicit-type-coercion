@@ -19,20 +19,20 @@ const genNumber = (number) => {
 
 // SETUP: create alphabet
 alphabet["a"] = `(!{} + [])[${genNumber(1)}]`;
-alphabet["b"] = "b";
-alphabet["c"] = "c";
+alphabet["b"] = `({} + [])[${genNumber(2)}]`;
+alphabet["c"] = `({} + [])[${genNumber(4)}]`;
 alphabet["d"] = "d";
 alphabet["e"] = `(!{} + [])[${genNumber(4)}]`;
 alphabet["f"] = `(!{} + [])[${genNumber(0)}]`;
 alphabet["g"] = "g";
 alphabet["h"] = "h";
-alphabet["i"] = "i";
-alphabet["j"] = "j";
+alphabet["i"] = `(+!![] / +[] + [])[${genNumber(3)}]`;
+alphabet["j"] = `({} + [])[${genNumber(3)}]`;
 alphabet["k"] = "k";
 alphabet["l"] = `(!{} + [])[${genNumber(2)}]`;
 alphabet["m"] = "m";
-alphabet["n"] = "n";
-alphabet["o"] = "o";
+alphabet["n"] = `(+!![] / +[] + [])[${genNumber(1)}]`;
+alphabet["o"] = `({} + [])[${genNumber(1)}]`;
 alphabet["p"] = "p";
 alphabet["q"] = "q";
 alphabet["r"] = `(!!{} + [])[${genNumber(1)}]`;
@@ -42,7 +42,7 @@ alphabet["u"] = `(!!{} + [])[${genNumber(2)}]`;
 alphabet["v"] = "v";
 alphabet["w"] = "w";
 alphabet["x"] = "x";
-alphabet["y"] = "y";
+alphabet["y"] = `(+!![] / +[] + [])[${genNumber(7)}]`;
 alphabet["z"] = "z";
 alphabet["A"] = "A";
 alphabet["B"] = "B";
@@ -52,13 +52,13 @@ alphabet["E"] = "E";
 alphabet["F"] = "F";
 alphabet["G"] = "G";
 alphabet["H"] = "H";
-alphabet["I"] = "I";
+alphabet["I"] = `(+!![] / +[] + [])[${genNumber(0)}]`;
 alphabet["J"] = "J";
 alphabet["K"] = "K";
 alphabet["L"] = "L";
 alphabet["M"] = "M";
 alphabet["N"] = `(+{} + [])[${genNumber(0)}]`;
-alphabet["O"] = "O";
+alphabet["O"] = `({} + [])[${genNumber(8)}]`;
 alphabet["P"] = "P";
 alphabet["Q"] = "Q";
 alphabet["R"] = "R";
@@ -70,6 +70,11 @@ alphabet["W"] = "W";
 alphabet["X"] = "X";
 alphabet["Y"] = "Y";
 alphabet["Z"] = "X";
+
+// SETUP: create chars
+chars["["] = `({} + [])[${genNumber(0)}]`;
+chars["]"] = `({} + [])[${genNumber(14)}]`;
+chars[" "] = `({} + [])[${genNumber(7)}]`;
 
 // DEBUG: different type coercions
 console.log(`
@@ -96,17 +101,40 @@ test 20: ${(!!{} + [])[1]}
 test 21: ${(!!{} + [])[2]}
 test 22: ${(!!{} + [])[3]}
 test 23: ${(+{} + [])[0]}
-test 24: ${(+{} + [])[1]}
-test 25: ${(+{} + [])[2]}
-alphabet: ${alphabet}
-numbers: ${numbers}
-chars: ${chars}
+test 24: ${({} + [])[0]}
+test 25: ${({} + [])[1]}
+test 26: ${({} + [])[2]}
+test 27: ${({} + [])[3]}
+test 28: ${({} + [])[4]}
+test 29: ${({} + [])[5]}
+test 30: ${({} + [])[6]}
+test 31: ${({} + [])[7]}
+test 32: ${({} + [])[8]}
+test 33: ${({} + [])[9]}
+test 34: ${({} + [])[10]}
+test 35: ${({} + [])[11]}
+test 36: ${({} + [])[12]}
+test 37: ${({} + [])[13]}
+test 38: ${({} + [])[14]}
+test 39: ${(+!![] / +[] + [])[0]}
+test 40: ${(+!![] / +[] + [])[1]}
+test 41: ${(+!![] / +[] + [])[2]}
+test 42: ${(+!![] / +[] + [])[3]}
+test 43: ${(+!![] / +[] + [])[4]}
+test 44: ${(+!![] / +[] + [])[5]}
+test 45: ${(+!![] / +[] + [])[6]}
+test 46: ${(+!![] / +[] + [])[7]}
 `);
+console.log(alphabet);
+console.log(numbers);
+console.log(chars);
 
 // OUTPUT: generate encrypted code
-const output = `console.log(${alphabet["r"]} + ${alphabet["e"]} + ${
-  alphabet["s"]
-} + ${alphabet["t"]} + (${genNumber(15)}))`;
+const output = `console.log(${chars["["]} + ${alphabet["r"]} + ${
+  alphabet["e"]
+} + ${alphabet["s"]} + ${alphabet["t"]} + ${chars[" "]} + (${genNumber(
+  15
+)}) + ${chars["]"]})`;
 fs.writeFileSync("dist/output.js", output);
 const outputResponse = childProcess.execSync("node dist/output.js").toString();
 
