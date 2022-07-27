@@ -17,10 +17,14 @@ const genNumber = (number) => {
   return Array.from({ length: number }, () => numbers["1"]).join(" + ");
 };
 
+const genString = (string) => {
+  return Array.from(string, (char) => alphabet[char]).join(" + ");
+};
+
 // SETUP: create alphabet
 alphabet["a"] = `(!{} + [])[${genNumber(1)}]`;
 alphabet["b"] = `({} + [])[${genNumber(2)}]`;
-alphabet["c"] = `({} + [])[${genNumber(4)}]`;
+alphabet["c"] = `({} + [])[${genNumber(5)}]`;
 alphabet["d"] = "d";
 alphabet["e"] = `(!{} + [])[${genNumber(4)}]`;
 alphabet["f"] = `(!{} + [])[${genNumber(0)}]`;
@@ -124,17 +128,26 @@ test 43: ${(+!![] / +[] + [])[4]}
 test 44: ${(+!![] / +[] + [])[5]}
 test 45: ${(+!![] / +[] + [])[6]}
 test 46: ${(+!![] / +[] + [])[7]}
+test 47: ${{}["toString"]}
+test 48: ${{}["constructor"]}
+test 49: ${[]["constructor"]}
+test 50: ${(+![])["constructor"]}
+test 51: ${([] + [])["constructor"]}
+test 52: ${true["constructor"]}
+test 53: ${genString("foo")}
 `);
 console.log(alphabet);
 console.log(numbers);
 console.log(chars);
 
 // OUTPUT: generate encrypted code
-const output = `console.log(${chars["["]} + ${alphabet["r"]} + ${
-  alphabet["e"]
-} + ${alphabet["s"]} + ${alphabet["t"]} + ${chars[" "]} + (${genNumber(
-  15
-)}) + ${chars["]"]})`;
+// const output = `console.log(${chars["["]} + ${alphabet["r"]} + ${
+//   alphabet["e"]
+// } + ${alphabet["s"]} + ${alphabet["t"]} + ${chars[" "]} + (${genNumber(
+//   15
+// )}) + ${chars["]"]})`;
+
+const output = `console.log(${genString("constructor")})`;
 fs.writeFileSync("dist/output.js", output);
 const outputResponse = childProcess.execSync("node dist/output.js").toString();
 
