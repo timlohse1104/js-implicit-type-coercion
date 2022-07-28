@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as childProcess from 'child_process';
-import { stringify } from 'querystring';
 
 // Allowed characters: ({[/>+!-=\]})
 // JS base types: Strings, Numbers, Booleans, Arrays, Objects
@@ -8,7 +7,6 @@ import { stringify } from 'querystring';
 
 const numbers = {};
 const alphabet = {};
-const chars = {};
 
 numbers['0'] = '+[]';
 numbers['1'] = '+!![]';
@@ -23,6 +21,8 @@ const genString = (string) => {
 };
 
 // SETUP: create alphabet
+alphabet[' '] = `({} + [])[${genNumber(7)}]`;
+alphabet['\\'] = `(/\\\\/+[])[${genNumber(1)}]`;
 alphabet['a'] = `(!{} + [])[${genNumber(1)}]`;
 alphabet['b'] = `({} + [])[${genNumber(2)}]`;
 alphabet['c'] = `({} + [])[${genNumber(5)}]`;
@@ -51,10 +51,11 @@ alphabet['w'] = 'w';
 alphabet['z'] = 'z';
 alphabet['A'] = `([]+[][${genString('constructor')}])[${genNumber(9)}]`;
 alphabet['B'] = 'B';
-alphabet['C'] = 'C';
+// https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/escape
+alphabet['C'] = `((()=>{})[${genString('constructor')}](${genString('return escape')})()(${alphabet['\\']}))[${genNumber(2)}]`;
 alphabet['D'] = 'D';
 alphabet['E'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(12)}]`;
-alphabet['F'] = 'F';
+alphabet['F'] = `(() => {})[${genString('constructor')}][${genNumber(9)}]`;
 alphabet['G'] = 'G';
 alphabet['H'] = 'H';
 alphabet['I'] = `(+!![] / +[] + [])[${genNumber(0)}]`;
@@ -75,9 +76,6 @@ alphabet['W'] = 'W';
 alphabet['X'] = 'X';
 alphabet['Y'] = 'Y';
 alphabet['Z'] = 'X';
-
-// SETUP: create chars
-chars[' '] = `({} + [])[${genNumber(7)}]`;
 
 // DEBUG
 // DEBUG: different type coercions
@@ -141,11 +139,17 @@ test 55: ([] + ([] + [])[${genString("constructor")}])[${genNumber(25)}]
 test 56: ${genString("Array")}.${genString("from")}({${genString("a")}:${genString("b")}})[${genString("constructor")}]
 test 57: ${Object.getOwnPropertyNames(Object)}
 test 58: ([]+(/-/)[${genString('constructor')}])
+test 59: ${"a".toUpperCase()}
+test 60: ${(() => {})["constructor"]}
+test 61: ${eval(((()=>{})['constructor']('return escape')()(alphabet[" "])))}
+test 61a: ${eval(((()=>{})['constructor']('return escape')()(alphabet["a"]))[2])}
+test 62: ${alphabet["\\"]}
+test 63: ${alphabet.C}
+test 64: ${eval(alphabet.C)}
 `);
 
 // console.log(alphabet);
 // console.log(numbers);
-// console.log(chars);
 
 // OUTPUT: generate encrypted code
 const output = `console.log(${genString('console')})`;
@@ -160,4 +164,4 @@ console.log(`
 | Executed - 'node output.js:
 |----------------------------
 | ${outputResponse}
-// `);
+`);
