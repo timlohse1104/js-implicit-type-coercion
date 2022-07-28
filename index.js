@@ -17,7 +17,13 @@ const genNumber = (number) => {
 };
 
 const genString = (string) => {
-  return Array.from(string, (char) => alphabet[char]).join(' + ');
+  return Array.from(string, (char) => {
+    if (!(char in alphabet)) {
+      const charCode = char.charCodeAt(0);
+      return `([]+[])[${genString('constructor')}][${genString('fromCharCode')}](${genNumber(charCode)})`;
+    }
+    return alphabet[char];
+  }).join(' + ');
 };
 
 // SETUP: create alphabet
@@ -43,39 +49,16 @@ alphabet['d'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(30)}]
 alphabet['p'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(14)}]`;
 alphabet['v'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(25)}]`;
 alphabet['x'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(13)}]`;
-alphabet['h'] = 'h';
-alphabet['k'] = 'k';
-alphabet['m'] = 'm';
-alphabet['q'] = 'q';
-alphabet['w'] = 'w';
-alphabet['z'] = 'z';
 alphabet['A'] = `([]+[][${genString('constructor')}])[${genNumber(9)}]`;
-alphabet['B'] = 'B';
 // https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/escape
 alphabet['C'] = `((()=>{})[${genString('constructor')}](${genString('return escape')})()(${alphabet['\\']}))[${genNumber(2)}]`;
-alphabet['D'] = 'D';
 alphabet['E'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(12)}]`;
 alphabet['F'] = `(() => {})[${genString('constructor')}][${genNumber(9)}]`;
-alphabet['G'] = 'G';
-alphabet['H'] = 'H';
 alphabet['I'] = `(+!![] / +[] + [])[${genNumber(0)}]`;
-alphabet['J'] = 'J';
-alphabet['K'] = 'K';
-alphabet['L'] = 'L';
-alphabet['M'] = 'M';
 alphabet['N'] = `(+{} + [])[${genNumber(0)}]`;
 alphabet['O'] = `({} + [])[${genNumber(8)}]`;
-alphabet['P'] = 'P';
-alphabet['Q'] = 'Q';
 alphabet['R'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(9)}]`;
 alphabet['S'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(9)}]`;
-alphabet['T'] = 'T';
-alphabet['U'] = 'U';
-alphabet['V'] = 'V';
-alphabet['W'] = 'W';
-alphabet['X'] = 'X';
-alphabet['Y'] = 'Y';
-alphabet['Z'] = 'X';
 
 // DEBUG
 // DEBUG: different type coercions
@@ -141,15 +124,19 @@ test 57: ${Object.getOwnPropertyNames(Object)}
 test 58: ([]+(/-/)[${genString('constructor')}])
 test 59: ${"a".toUpperCase()}
 test 60: ${(() => {})["constructor"]}
-test 61: ${eval(((()=>{})['constructor']('return escape')()(alphabet[" "])))}
-test 61a: ${eval(((()=>{})['constructor']('return escape')()(alphabet["a"]))[2])}
+test 61: ${eval(((()=>{})['constructor']('return escape')()(alphabet["\\"]))[2])}
 test 62: ${alphabet["\\"]}
 test 63: ${alphabet.C}
 test 64: ${eval(alphabet.C)}
+test 65: ${'D'.charCodeAt(0)}
+test 66: ${eval(genNumber('D'.charCodeAt(0)))}
+test 67: ${String.fromCharCode(eval(genNumber('D'.charCodeAt(0))))}
+test 65: ${([]+[])['constructor']}
+test 66: ${([]+[])['constructor']['fromCharCode'](eval(genNumber('D'.charCodeAt(0))))}
 `);
 
-// console.log(alphabet);
-// console.log(numbers);
+console.log(alphabet);
+console.log(numbers);
 
 // OUTPUT: generate encrypted code
 const output = `console.log(${genString('console')})`;
