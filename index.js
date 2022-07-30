@@ -85,17 +85,19 @@ fs.writeFileSync('dist/messageOutput.js', messageOutput);
 const messageOutputResponse = childProcess.execSync('node dist/messageOutput.js').toString();
 
 console.log(`
-| Content - 'output.js'     :
-|----------------------------
-| ${messageOutput}
-|
-| Executed - 'node output.js:
+| Executed - 'node dist/messageOutput.js:
 |----------------------------
 | ${messageOutputResponse}
 `);
 
 // OUTPUT-TEST: generate encrypted code message typecoercion compiler
-const compilerOutput = `${compiler.compile('// Allowed characters: ({[/>+!-=]})')}
-${compiler.compile('// JS base types: Strings, Numbers, Booleans, Arrays, Objects')}
-${compiler.compile('// Merge base types -> Type Coercion')}`;
-fs.writeFileSync('dist/compilerOutput.js', messageOutput);
+// const compilerOutput = `${compiler.compile('const numbers = { 0: "+[]", 1: "+!![]" };')}${compiler.compile('console.log(`${numbers}`);')}`;
+const compilerOutput = `${compiler.compile('const zero = "+[]";const one = "+!![]";console.log(`Null: ${zero}, Eins: ${one}!`);')}`;
+fs.writeFileSync('dist/compilerOutput.js', compilerOutput);
+const compilerOutputResponse = childProcess.execSync('node dist/compilerOutput.js').toString();
+
+console.log(`
+| Executed - 'node dist/compilerOutput.js:
+|----------------------------
+| ${compilerOutputResponse}
+`);
