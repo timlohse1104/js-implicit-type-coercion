@@ -1,55 +1,8 @@
 import * as fs from 'fs';
 import * as childProcess from 'child_process';
+import { TypeCoercionCompiler } from './tc-compiler/compiler.js';
 
-// Allowed characters: ({[/>+!-=\]})
-// JS base types: Strings, Numbers, Booleans, Arrays, Objects
-// Merge base types -> Type Coercion
-
-const numbers = {};
-const alphabet = {};
-
-numbers['0'] = '+[]';
-numbers['1'] = '+!![]';
-
-const genNumber = (number) => {
-  if (number === 0) return numbers['0'];
-  return Array.from({ length: number }, () => numbers['1']).join(' + ');
-};
-
-const genString = (string) =>
-  Array.from(string, (char) => {
-    if (!(char in alphabet)) {
-      const charCode = char.charCodeAt(0);
-      return `([]+[])[${genString('constructor')}][${genString('fromCharCode')}](${genNumber(charCode)})`;
-    }
-    return alphabet[char];
-  }).join('+');
-
-// SETUP: create alphabet
-alphabet['a'] = `(!{} + [])[${genNumber(1)}]`;
-alphabet['b'] = `({} + [])[${genNumber(2)}]`;
-alphabet['o'] = `({} + [])[${genNumber(1)}]`;
-alphabet['e'] = `(!{} + [])[${genNumber(4)}]`;
-alphabet['c'] = `({} + [])[${genNumber(5)}]`;
-alphabet['t'] = `(!!{} + [])[${genNumber(0)}]`;
-alphabet[' '] = `({} + [])[${genNumber(7)}]`;
-alphabet['f'] = `(!{} + [])[${genNumber(0)}]`;
-alphabet['s'] = `(!{} + [])[${genNumber(3)}]`;
-alphabet['r'] = `(!!{} + [])[${genNumber(1)}]`;
-alphabet['u'] = `(!!{} + [])[${genNumber(2)}]`;
-alphabet['i'] = `(+!![] / +[] + [])[${genNumber(3)}]`;
-alphabet['n'] = `(+!![] / +[] + [])[${genNumber(1)}]`;
-alphabet['S'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(9)}]`;
-alphabet['g'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(14)}]`;
-alphabet['p'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(14)}]`;
-alphabet['\\'] = `(/\\\\/+[])[${genNumber(1)}]`;
-alphabet['d'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(30)}]`;
-alphabet['h'] = `(${genNumber(17)})[${genString('toString')}](${genNumber(18)})`;
-alphabet['m'] = `(${genNumber(22)})[${genString('toString')}](${genNumber(24)})`;
-// https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/escape
-alphabet['C'] = `((()=>{})[${genString('constructor')}](${genString('return escape')})()(${alphabet['\\']}))[${genNumber(2)}]`;
-
-const compile = (code) => `(()=>{})[${genString('constructor')}](${genString(code)})()`;
+const compiler = new TypeCoercionCompiler();
 
 // DEBUG
 // prettier-ignore
@@ -106,40 +59,43 @@ test 49: ${(+![])["constructor"]}
 test 50: ${([] + [])["constructor"]}
 test 51: ${(!![])["constructor"]}
 test 52: ${{}["toString"]}
-test 53: ([] + ([] + [])[${genString("constructor")}])[${genNumber(9)}]
-test 54: ([] + ([] + [])[${genString("constructor")}])[${genNumber(14)}]
-test 55: ([] + ([] + [])[${genString("constructor")}])[${genNumber(25)}]
+test 53: ([] + ([] + [])[${compiler.genString("constructor")}])[${compiler.genNumber(9)}]
+test 54: ([] + ([] + [])[${compiler.genString("constructor")}])[${compiler.genNumber(14)}]
+test 55: ([] + ([] + [])[${compiler.genString("constructor")}])[${compiler.genNumber(25)}]
 test 56: ${Object.getOwnPropertyNames(Object)}
-test 57: ([]+(/-/)[${genString('constructor')}])
+test 57: ([]+(/-/)[${compiler.genString('constructor')}])
 test 58: ${"a".toUpperCase()}
 test 59: ${(() => {})["constructor"]}
-test 60: ${eval(((()=>{})['constructor']('return escape')()(alphabet["\\"]))[2])}
-test 61: ${alphabet["\\"]}
-test 62: ${alphabet.C}
-test 63: ${eval(alphabet.C)}
+test 60: ${eval(((()=>{})['constructor']('return escape')()(compiler.alphabet["\\"]))[2])}
+test 61: ${compiler.alphabet["\\"]}
+test 62: ${compiler.alphabet.C}
+test 63: ${eval(compiler.alphabet.C)}
 test 64: ${'D'.charCodeAt(0)}
-test 65: ${eval(genNumber('D'.charCodeAt(0)))}
-test 66: ${String.fromCharCode(eval(genNumber('D'.charCodeAt(0))))}
+test 65: ${eval(compiler.genNumber('D'.charCodeAt(0)))}
+test 66: ${String.fromCharCode(eval(compiler.genNumber('D'.charCodeAt(0))))}
 test 67: ${([]+[])['constructor']}
-test 68: ${([]+[])['constructor']['fromCharCode'](eval(genNumber('D'.charCodeAt(0))))}
+test 68: ${([]+[])['constructor']['fromCharCode'](eval(compiler.genNumber('D'.charCodeAt(0))))}
 test 69: ${(10).toString(2)}
 test 70: ${(13).toString(18)}
 `);
 
-console.log(alphabet);
-console.log(numbers);
-
-// OUTPUT: generate encrypted code
-const output = `${compile('console.log("Lauri mein Schatz, ich liebe dich!");')}`;
-fs.writeFileSync('dist/output.js', output);
-const outputResponse = childProcess.execSync('node dist/output.js').toString();
+// OUTPUT-TEST: generate encrypted code message
+const messageOutput = `${compiler.compile('console.log("Lauri mein Schatz, ich liebe dich!");')}`;
+fs.writeFileSync('dist/messageOutput.js', messageOutput);
+const messageOutputResponse = childProcess.execSync('node dist/messageOutput.js').toString();
 
 console.log(`
 | Content - 'output.js'     :
 |----------------------------
-| ${output}
+| ${messageOutput}
 |
 | Executed - 'node output.js:
 |----------------------------
-| ${outputResponse}
+| ${messageOutputResponse}
 `);
+
+// OUTPUT-TEST: generate encrypted code message typecoercion compiler
+const compilerOutput = `${compiler.compile('// Allowed characters: ({[/>+!-=]})')}
+${compiler.compile('// JS base types: Strings, Numbers, Booleans, Arrays, Objects')}
+${compiler.compile('// Merge base types -> Type Coercion')}`;
+fs.writeFileSync('dist/compilerOutput.js', messageOutput);
