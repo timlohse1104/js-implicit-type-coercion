@@ -16,52 +16,42 @@ const genNumber = (number) => {
   return Array.from({ length: number }, () => numbers['1']).join(' + ');
 };
 
-const genString = (string) => {
-  return Array.from(string, (char) => {
+const genString = (string) =>
+  Array.from(string, (char) => {
     if (!(char in alphabet)) {
       const charCode = char.charCodeAt(0);
       return `([]+[])[${genString('constructor')}][${genString('fromCharCode')}](${genNumber(charCode)})`;
     }
     return alphabet[char];
-  }).join(' + ');
-};
+  }).join('+');
 
 // SETUP: create alphabet
-alphabet[' '] = `({} + [])[${genNumber(7)}]`;
-alphabet['\\'] = `(/\\\\/+[])[${genNumber(1)}]`;
 alphabet['a'] = `(!{} + [])[${genNumber(1)}]`;
 alphabet['b'] = `({} + [])[${genNumber(2)}]`;
-alphabet['c'] = `({} + [])[${genNumber(5)}]`;
-alphabet['e'] = `(!{} + [])[${genNumber(4)}]`;
-alphabet['f'] = `(!{} + [])[${genNumber(0)}]`;
-alphabet['i'] = `(+!![] / +[] + [])[${genNumber(3)}]`;
-alphabet['j'] = `({} + [])[${genNumber(3)}]`;
-alphabet['l'] = `(!{} + [])[${genNumber(2)}]`;
-alphabet['n'] = `(+!![] / +[] + [])[${genNumber(1)}]`;
 alphabet['o'] = `({} + [])[${genNumber(1)}]`;
-alphabet['r'] = `(!!{} + [])[${genNumber(1)}]`;
-alphabet['s'] = `(!{} + [])[${genNumber(3)}]`;
+alphabet['e'] = `(!{} + [])[${genNumber(4)}]`;
+alphabet['c'] = `({} + [])[${genNumber(5)}]`;
 alphabet['t'] = `(!!{} + [])[${genNumber(0)}]`;
+alphabet[' '] = `({} + [])[${genNumber(7)}]`;
+alphabet['f'] = `(!{} + [])[${genNumber(0)}]`;
+alphabet['s'] = `(!{} + [])[${genNumber(3)}]`;
+alphabet['r'] = `(!!{} + [])[${genNumber(1)}]`;
 alphabet['u'] = `(!!{} + [])[${genNumber(2)}]`;
-alphabet['y'] = `(+!![] / +[] + [])[${genNumber(7)}]`;
+alphabet['i'] = `(+!![] / +[] + [])[${genNumber(3)}]`;
+alphabet['n'] = `(+!![] / +[] + [])[${genNumber(1)}]`;
+alphabet['S'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(9)}]`;
 alphabet['g'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(14)}]`;
-alphabet['d'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(30)}]`;
 alphabet['p'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(14)}]`;
-alphabet['v'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(25)}]`;
-alphabet['x'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(13)}]`;
-alphabet['A'] = `([]+[][${genString('constructor')}])[${genNumber(9)}]`;
+alphabet['\\'] = `(/\\\\/+[])[${genNumber(1)}]`;
+alphabet['d'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(30)}]`;
+alphabet['h'] = `(${genNumber(17)})[${genString('toString')}](${genNumber(18)})`;
+alphabet['m'] = `(${genNumber(22)})[${genString('toString')}](${genNumber(24)})`;
 // https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/escape
 alphabet['C'] = `((()=>{})[${genString('constructor')}](${genString('return escape')})()(${alphabet['\\']}))[${genNumber(2)}]`;
-alphabet['E'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(12)}]`;
-alphabet['F'] = `(() => {})[${genString('constructor')}][${genNumber(9)}]`;
-alphabet['I'] = `(+!![] / +[] + [])[${genNumber(0)}]`;
-alphabet['N'] = `(+{} + [])[${genNumber(0)}]`;
-alphabet['O'] = `({} + [])[${genNumber(8)}]`;
-alphabet['R'] = `([] + (/-/)[${genString('constructor')}])[${genNumber(9)}]`;
-alphabet['S'] = `([] + ([] + [])[${genString('constructor')}])[${genNumber(9)}]`;
+
+const compile = (code) => `(()=>{})[${genString('constructor')}](${genString(code)})()`;
 
 // DEBUG
-// DEBUG: different type coercions
 // prettier-ignore
 console.log(`
 test 1: ${"2" + -[]}
@@ -119,27 +109,28 @@ test 52: ${{}["toString"]}
 test 53: ([] + ([] + [])[${genString("constructor")}])[${genNumber(9)}]
 test 54: ([] + ([] + [])[${genString("constructor")}])[${genNumber(14)}]
 test 55: ([] + ([] + [])[${genString("constructor")}])[${genNumber(25)}]
-test 56: ${genString("Array")}.${genString("from")}({${genString("a")}:${genString("b")}})[${genString("constructor")}]
-test 57: ${Object.getOwnPropertyNames(Object)}
-test 58: ([]+(/-/)[${genString('constructor')}])
-test 59: ${"a".toUpperCase()}
-test 60: ${(() => {})["constructor"]}
-test 61: ${eval(((()=>{})['constructor']('return escape')()(alphabet["\\"]))[2])}
-test 62: ${alphabet["\\"]}
-test 63: ${alphabet.C}
-test 64: ${eval(alphabet.C)}
-test 65: ${'D'.charCodeAt(0)}
-test 66: ${eval(genNumber('D'.charCodeAt(0)))}
-test 67: ${String.fromCharCode(eval(genNumber('D'.charCodeAt(0))))}
-test 65: ${([]+[])['constructor']}
-test 66: ${([]+[])['constructor']['fromCharCode'](eval(genNumber('D'.charCodeAt(0))))}
+test 56: ${Object.getOwnPropertyNames(Object)}
+test 57: ([]+(/-/)[${genString('constructor')}])
+test 58: ${"a".toUpperCase()}
+test 59: ${(() => {})["constructor"]}
+test 60: ${eval(((()=>{})['constructor']('return escape')()(alphabet["\\"]))[2])}
+test 61: ${alphabet["\\"]}
+test 62: ${alphabet.C}
+test 63: ${eval(alphabet.C)}
+test 64: ${'D'.charCodeAt(0)}
+test 65: ${eval(genNumber('D'.charCodeAt(0)))}
+test 66: ${String.fromCharCode(eval(genNumber('D'.charCodeAt(0))))}
+test 67: ${([]+[])['constructor']}
+test 68: ${([]+[])['constructor']['fromCharCode'](eval(genNumber('D'.charCodeAt(0))))}
+test 69: ${(10).toString(2)}
+test 70: ${(13).toString(18)}
 `);
 
 console.log(alphabet);
 console.log(numbers);
 
 // OUTPUT: generate encrypted code
-const output = `console.log(${genString('console')})`;
+const output = `${compile('console.log("Lauri mein Schatz, ich liebe dich!");')}`;
 fs.writeFileSync('dist/output.js', output);
 const outputResponse = childProcess.execSync('node dist/output.js').toString();
 
