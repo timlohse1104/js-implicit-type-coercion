@@ -8,6 +8,6 @@ I probably went too far and compiled the source of code of a fully functional js
 ## Instructions
 To run the example use the following command:
 
-```node index.js```
+```node src/index.js```
 
 You will find the output under the /dist folder. 
